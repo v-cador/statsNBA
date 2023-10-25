@@ -15,6 +15,7 @@ Imports:
     golem (>= 0.4.1),
     magrittr,
     nbastatR,
+    pkgload,
     shiny (>= 1.7.3),
     shinyWidgets,
     tidyr

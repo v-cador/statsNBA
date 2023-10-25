@@ -1,0 +1,11 @@
+name: statsnba
+title:
+username:
+account: vcadoret
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10314817
+bundleId: 7852864
+url: https://vcadoret.shinyapps.io/statsnba/
+when: 1698267229.01425
+lastSyncTime: 1698267229.01428
