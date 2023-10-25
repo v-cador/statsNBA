@@ -18,9 +18,20 @@
 ## install.packages('attachment') # if needed.
 attachment::att_amend_desc()
 
+# Pipe
+usethis::use_pipe()
+
+# Ajout des packages
+usethis::use_package("dplyr")
+usethis::use_package("shinyWidgets")
+usethis::use_package("tidyr")
+usethis::use_package("DT")
+
 ## Add modules ----
 ## Create a module infrastructure in R/
-golem::add_module(name = "name_of_module1", with_test = TRUE) # Name of the module
+golem::add_module(name = "scoreurs", with_test = TRUE) # Name of the module
+dev_file <- fusen::add_dev_history(open = TRUE)
+
 golem::add_module(name = "name_of_module2", with_test = TRUE) # Name of the module
 
 ## Add helper functions ----

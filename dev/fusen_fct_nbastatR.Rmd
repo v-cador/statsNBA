@@ -1,0 +1,61 @@
+---
+title: "Fonctions utiles du package nbastatR"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# get_match_day
+
+```{r function-get_match_day}
+#' Récupération des matchs d'un jour souhaité
+#'
+#'
+#' @return (dfr) table des matchs des dates souhaitées
+#' @export
+#' 
+#' @importFrom nbastatR days_scores
+#' @importFrom dplyr filter pull
+#'
+#' @examples
+get_match_day <- function(game_dates = Sys.Date()){
+  days_scores(game_dates = game_dates, 
+              league = "NBA") %>%
+    filter(nameTable == "LineScore") %>%
+    pull(dataTable) %>% .[[1]]
+}
+```
+
+```{r examples-my_fun}
+get_match_day()
+```
+
+```{r tests-my_fun}
+test_that("get_match_day works", {
+  matchs_24102023 <- get_match_day(as.Date("2023-10-24"))
+  expect_equal(nrow(matchs_24102023), 4)
+  expect_equal(names(matchs_24102023), 
+               c("dateGame", "slugTeam", "numberGameDate", "idGame", "idTeam", 
+                 "pctFG", "pctFT", "pctFG3", "nameTeam", "cityTeam", "teamName", 
+                 "recordOverall", "ptsQ1", "ptsQ2", "ptsQ3", "ptsQ4", "ptsOT1", 
+                 "ptsOT2", "ptsOT3", "ptsOT4", "ptsOT5", "ptsOT6", "ptsOT7", "ptsOT8", 
+                 "ptsOT9", "ptsOT10", "pts", "ast", "treb", "tov"))
+})
+```
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/fusen_fct_nbastatR.Rmd", vignette_name = "Go further")
+```
+

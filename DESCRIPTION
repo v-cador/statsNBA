@@ -1,13 +1,33 @@
 Package: statsNBA
 Title: Statistiques sur les joueurs de NBA
-Version: 0.0.0.9000
-Authors@R: person('Valentin', 'Cadoret', email = 'valentin.cadoret@gmail.com', role = c('cre', 'aut'))
-Description: Ce package contient une application shiny ainsi qu'un ensemble de fonctions pour analyser les performances des joueurs de NBA. Il permet entre-autre de voir les performances récentes des joueurs.
+Version: 0.0.1
+Authors@R: 
+    person("Valentin", "Cadoret", , "valentin.cadoret@gmail.com", role = c("cre", "aut"))
+Description: Ce package contient une application shiny ainsi qu'un
+    ensemble de fonctions pour analyser les performances des joueurs de
+    NBA. Il permet entre-autre de voir les performances récentes des
+    joueurs.
 License: MIT + file LICENSE
 Imports: 
     config (>= 0.3.2),
+    dplyr,
+    DT,
     golem (>= 0.4.1),
-    shiny (>= 1.7.3)
+    magrittr,
+    nbastatR,
+    shiny (>= 1.7.3),
+    shinyWidgets,
+    tidyr
+Suggests: 
+    knitr,
+    rmarkdown,
+    spelling,
+    testthat (>= 3.0.0)
+VignetteBuilder: 
+    knitr
+Config/fusen/version: 0.5.2
+Config/testthat/edition: 3
 Encoding: UTF-8
+Language: en-US
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3

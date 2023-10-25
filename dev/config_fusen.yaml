@@ -1,0 +1,13 @@
+fusen_fct_nbastatR.Rmd:
+  path: dev/fusen_fct_nbastatR.Rmd
+  state: active
+  R: R/get_match_day.R
+  tests: tests/testthat/test-get_match_day.R
+  vignettes: vignettes/go-further.Rmd
+  inflate:
+    flat_file: dev/fusen_fct_nbastatR.Rmd
+    vignette_name: Go further
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
