@@ -22,8 +22,8 @@ devtools::load_all(here::here())
 # Chargement des données
 # game_data = suppressWarnings(game_logs(seasons = 2023:2024))
 # matchs_du_jour = suppressWarnings(get_match_day(Sys.Date()))
-game_data <- readRDS(here::here("dev/game_data_20231027.RDS"))
-matchs_du_jour <- readRDS(here::here("dev/matchs_du_jour_20231027.RDS"))
+game_data <- readRDS(here::here("dev/game_data_20231028.RDS"))
+matchs_du_jour <- readRDS(here::here("dev/matchs_du_jour_20231028.RDS"))
 
 # Calcul des perfs sur les 10 derniers matchs pour 1 et 2 joueurs
 pts_last_10_games_long <- get_pts_last_games_long(game_data, nb_last_games = 10)
