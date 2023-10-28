@@ -18,8 +18,10 @@ app_ui <- function(request) {
         column(2,
                mod_choix_journees_ui("select_journee")),
         column(10,
+               h2("Statistiques pour un seul joueur"),
                mod_scoreurs_ui("scoreurs1", seuil_min_scoreurs = 20),
                HTML("<hr>"),
+               h2("Statistiques pour un duo de joueurs"),
                mod_scoreurs_ui("scoreurs2", seuil_min_scoreurs = 40))
       )
     )

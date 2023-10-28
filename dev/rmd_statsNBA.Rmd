@@ -1,0 +1,89 @@
+---
+title: "Performances des joueurs de NBA sur les 10 derniers matchs"
+output: html_document
+date: "2023-10-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r message = FALSE, warning = FALSE}
+# Chargement des librairies
+library(dplyr)
+library(lubridate)
+library(tidyr)
+# library(statsNBA)
+devtools::load_all(here::here())
+```
+
+
+```{r}
+# Chargement des données
+# game_data = suppressWarnings(game_logs(seasons = 2023:2024))
+# matchs_du_jour = suppressWarnings(get_match_day(Sys.Date()))
+game_data <- readRDS(here::here("dev/game_data_20231027.RDS"))
+matchs_du_jour <- readRDS(here::here("dev/matchs_du_jour_20231027.RDS"))
+
+# Calcul des perfs sur les 10 derniers matchs pour 1 et 2 joueurs
+pts_last_10_games_long <- get_pts_last_games_long(game_data, nb_last_games = 10)
+# Et pour les binômes de joueurs
+pts_last_10_games_long = pts_last_10_games_long %>%
+  mutate(nb_joueurs = 1) %>%
+  get_nb_pts_seuil(seuil_pts = 20) %>%
+  # Ajout de la table pour 2 joueurs
+  bind_rows(pts_last_10_games_long %>%
+              select(nameTeam, namePlayer, pts, id_last_game) %>%
+              left_join(pts_last_10_games_long %>%
+                          select(nameTeam, namePlayer2=namePlayer, pts2=pts, id_last_game),
+                        by = c("nameTeam","id_last_game")) %>%
+              filter(namePlayer < namePlayer2) %>% # Pour que (b,a) ne soit pas présent si (a,b) l'est déjà
+              mutate(pts = pts + pts2,
+                     namePlayer = paste(namePlayer, namePlayer2, sep=" / ")) %>%
+              select(-c(pts2, namePlayer2)) %>%
+              mutate(nb_joueurs = 2) %>%
+              get_nb_pts_seuil(seuil_pts = 40))
+
+```
+
+
+## Statistiques pour un seul joueur
+
+```{r}
+print_datatable_stats <- function(matchs_du_jour, pts_last_x_games_long, 
+                                  nb_matchs = 10, nb_players = 1, 
+                                  seuil_min_scoreurs = 20){
+  datatable(matchs_du_jour %>%
+              select(nameTeam) %>%
+              left_join(pts_last_x_games_long %>%
+                          filter(nb_joueurs == nb_players) %>%
+                          select(-nb_joueurs) %>%
+                          arrange(id_last_game) %>%
+                          pivot_wider(names_from = id_last_game, values_from = pts),
+                        by = "nameTeam") %>%
+              arrange(desc(pts_moy))) %>%
+    formatStyle(as.character(1:nb_matchs),
+                backgroundColor = styleInterval(cuts = seuil_min_scoreurs + seq(0,20,5) - 1,
+                                                values = c("#FFFFFF",c("#F5DCCF","#FFAA95","#cc8087","#8e646f","#696571"))))
+}
+```
+
+```{r}
+print_datatable_stats(matchs_du_jour, 
+                      pts_last_x_games_long = pts_last_10_games_long, 
+                      nb_matchs = 10, 
+                      nb_players = 1, 
+                      seuil_min_scoreurs = 20)
+```
+
+
+## Statistiques pour un duo de joueurs
+
+```{r}
+print_datatable_stats(matchs_du_jour, 
+                      pts_last_x_games_long = pts_last_10_games_long, 
+                      nb_matchs = 10, 
+                      nb_players = 2, 
+                      seuil_min_scoreurs = 40)
+```
+
