@@ -1,7 +1,7 @@
 testServer(
   mod_scoreurs_server,
   # Add here your module params
-  args = list()
+  args = list(nb_joueurs = 1, seuil_min_scoreurs = 20)
   , {
     ns <- session$ns
     expect_true(
@@ -25,7 +25,7 @@ testServer(
     # - Testing output
     # expect_true(inherits(output$tbl$html, "html"))
 })
- 
+
 test_that("module ui works", {
   ui <- mod_scoreurs_ui(id = "test")
   golem::expect_shinytaglist(ui)
@@ -35,4 +35,4 @@ test_that("module ui works", {
     expect_true(i %in% names(fmls))
   }
 })
- 
+

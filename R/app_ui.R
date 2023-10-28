@@ -13,7 +13,15 @@ app_ui <- function(request) {
     # Your application UI logic
     fluidPage(
       h1("statsNBA"),
-      mod_scoreurs_ui("scoreurs1")
+
+      fluidRow(
+        column(2,
+               mod_choix_journees_ui("select_journee")),
+        column(10,
+               mod_scoreurs_ui("scoreurs1", seuil_min_scoreurs = 20),
+               HTML("<hr>"),
+               mod_scoreurs_ui("scoreurs2", seuil_min_scoreurs = 40))
+      )
     )
   )
 }

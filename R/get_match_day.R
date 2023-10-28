@@ -56,9 +56,9 @@ get_pts_last_games_long <- function(game_data, nb_last_games){
     right_join(get_last_x_games_per_team(game_data, nb_last_games),
                by = c("dateGame","nameTeam")) %>%
     select(nameTeam, namePlayer, pts, id_last_game) %>%
-    group_by(nameTeam, namePlayer) %>% 
-    mutate(pts_moy = round(mean(pts, na.rm = TRUE),1)) %>% 
-    ungroup() %>%
+    # group_by(nameTeam, namePlayer) %>% 
+    # mutate(pts_moy = round(mean(pts, na.rm = TRUE),1)) %>% 
+    # ungroup() %>%
     arrange(desc(id_last_game))
 }
 
@@ -76,6 +76,7 @@ get_pts_last_games_long <- function(game_data, nb_last_games){
 get_nb_pts_seuil <- function(pts_last_games_long, seuil_pts){
   pts_last_games_long %>%
     group_by(nameTeam, namePlayer) %>%
-    mutate(nb_pts_seuil = sum(pts >= seuil_pts, na.rm = TRUE)) %>%
+    mutate(pts_moy = round(mean(pts, na.rm = TRUE),1),
+           nb_pts_seuil = sum(pts >= seuil_pts, na.rm = TRUE)) %>%
     ungroup()
 }
