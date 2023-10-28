@@ -23,6 +23,6 @@ library(statsNBA)
 # get_match_day
 
 ```{r examples-my_fun}
-get_match_day()
+# get_match_day()
 ```
 

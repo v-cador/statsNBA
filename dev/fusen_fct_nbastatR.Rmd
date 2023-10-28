@@ -19,6 +19,7 @@ pkgload::load_all(export_all = FALSE)
 ```{r function-get_match_day}
 #' Récupération des matchs d'un jour souhaité
 #'
+#' @param game_dates les dates des matchs souhaités
 #'
 #' @return (dfr) table des matchs des dates souhaitées
 #' @export
@@ -33,10 +34,71 @@ get_match_day <- function(game_dates = Sys.Date()){
     filter(nameTable == "LineScore") %>%
     pull(dataTable) %>% .[[1]]
 }
+
+#' Récupération des x derniers matchs par équipe
+#'
+#' @param game_logs (dfr) la table complète des stats par joueur/match
+#' @param nb_last_games (int) le nombre de matchs souhaités
+#'
+#' @return (dfr) table des nameTeam et dateGame des x derniers matchs
+#' @export
+#' 
+#' @importFrom dplyr distinct group_by arrange desc mutate row_number slice_head ungroup
+#'
+#' @examples
+get_last_x_games_per_team <- function(game_logs, nb_last_games){
+  game_logs %>%
+    distinct(dateGame, nameTeam) %>%
+    group_by(nameTeam) %>%
+    arrange(desc(dateGame)) %>%
+    mutate(id_last_game = row_number()) %>%
+    slice_head(n = nb_last_games) %>%
+    ungroup()
+}
+
+#' Récupérer les points des x derniers matchs, format long
+#'
+#' @param game_data (dfr) la table complète des stats par joueur/match
+#' @param nb_last_games (int) le nombre de matchs souhaités
+#' 
+#' @importFrom dplyr right_join select group_by mutate ungroup arrange desc
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_pts_last_games_long <- function(game_data, nb_last_games){
+  pts_last_games_long = game_data %>%
+    right_join(get_last_x_games_per_team(game_data, nb_last_games),
+               by = c("dateGame","nameTeam")) %>%
+    select(nameTeam, namePlayer, pts, id_last_game) %>%
+    group_by(nameTeam, namePlayer) %>% 
+    mutate(pts_moy = round(mean(pts, na.rm = TRUE),1)) %>% 
+    ungroup() %>%
+    arrange(desc(id_last_game))
+}
+
+#' Calculer le nombre de fois où le joueur a scoré + qu'un seuil
+#'
+#' @param pts_last_games_long (dfr) la table des points sur les x derniers matchs au format long
+#' @param seuil_pts le nombre de points seuil
+#' 
+#' @importFrom dplyr group_by mutate ungroup
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_nb_pts_seuil <- function(pts_last_games_long, seuil_pts){
+  pts_last_games_long %>%
+    group_by(nameTeam, namePlayer) %>%
+    mutate(nb_pts_seuil = sum(pts >= seuil_pts, na.rm = TRUE)) %>%
+    ungroup()
+}
 ```
 
 ```{r examples-my_fun}
-get_match_day()
+# get_match_day()
 ```
 
 ```{r tests-my_fun}

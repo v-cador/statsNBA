@@ -26,6 +26,7 @@ usethis::use_package("dplyr")
 usethis::use_package("shinyWidgets")
 usethis::use_package("tidyr")
 usethis::use_package("DT")
+usethis::use_package("shinybusy")
 
 ## Add modules ----
 ## Create a module infrastructure in R/

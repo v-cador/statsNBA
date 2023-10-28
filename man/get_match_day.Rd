@@ -7,7 +7,7 @@
 get_match_day(game_dates = Sys.Date())
 }
 \arguments{
-\item{game_dates}{(Date) les dates des jours souhaités}
+\item{game_dates}{les dates des matchs souhaités}
 }
 \value{
 (dfr) table des matchs des dates souhaitées
@@ -16,5 +16,5 @@ get_match_day(game_dates = Sys.Date())
 Récupération des matchs d'un jour souhaité
 }
 \examples{
-get_match_day()
+# get_match_day()
 }

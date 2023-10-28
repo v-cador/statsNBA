@@ -42,7 +42,7 @@ mod_scoreurs_ui <- function(id){
 #' @importFrom utils head
 #' @importFrom shiny reactiveValues
 #' @importFrom nbastatR game_logs
-#' @importFrom dplyr select group_by arrange mutate ungroup left_join desc
+#' @importFrom dplyr select group_by arrange mutate ungroup left_join right_join desc
 #' @importFrom tidyr pivot_wider
 #' @importFrom DT datatable formatStyle styleInterval renderDT
 #' @noRd
@@ -70,38 +70,41 @@ mod_scoreurs_server <- function(id, global){
       local_rv$nb_last_games = input$nb_last_games
 
       # id "saison/id_game" des derniers xx matchs
-      local_rv$last_x_season_game = global$game_data %>%
-        arrange(desc(season_game)) %>%
-        pull(season_game) %>% unique() %>%
-        head(local_rv$nb_last_games)
+      # local_rv$last_x_season_game = global$game_data %>%
+      #   arrange(desc(season_game)) %>%
+      #   pull(season_game) %>% unique() %>%
+      #   head(local_rv$nb_last_games)
 
       # Pts marqués sur les derniers matchs
-      local_rv$pts_last_games_long = global$game_data %>%
-        filter(season_game %in% local_rv$last_x_season_game) %>%
-        select(nameTeam, namePlayer, pts, season_game) %>%
-        group_by(nameTeam, namePlayer) %>% mutate(pts_moy = round(mean(pts, na.rm = TRUE),1)) %>% ungroup() %>%
-        arrange(desc(season_game))
+      # local_rv$pts_last_games_long = global$game_data %>%
+      #   # filter(season_game %in% local_rv$last_x_season_game) %>%
+      #   right_join(get_last_x_games_per_team(global$game_data, local_rv$nb_last_games),
+      #              by = c("dateGame","nameTeam")) %>%
+      #   select(nameTeam, namePlayer, pts, id_last_game) %>%
+      #   group_by(nameTeam, namePlayer) %>% mutate(pts_moy = round(mean(pts, na.rm = TRUE),1)) %>% ungroup() %>%
+      #   arrange(desc(id_last_game))
+      local_rv$pts_last_games_long <- get_pts_last_games_long(global$game_data,
+                                                              local_rv$nb_last_games)
     })
 
     observeEvent(input$seuil_pts, {
       local_rv$seuil_pts = input$seuil_pts
       # Table du nb de pts par match pour chaque joueur
-      local_rv$pts_last_games_long <- local_rv$pts_last_games_long %>%
-        group_by(nameTeam, namePlayer) %>%
-        mutate(nb_pts_seuil = sum(pts >= local_rv$seuil_pts, na.rm = TRUE)) %>%
-        ungroup()
+      local_rv$pts_last_games_long <- get_nb_pts_seuil(local_rv$pts_last_games_long,
+                                                       local_rv$seuil_pts)
     })
 
     output$scores_joueurs <- renderDT({
       datatable(local_rv$matchs_du_jour %>%
-        select(nameTeam) %>%
-        left_join(local_rv$pts_last_games_long %>%
-                    pivot_wider(names_from = season_game, values_from = pts),
-                  by = "nameTeam") %>%
-        arrange(desc(pts_moy))) %>%
-        formatStyle(as.character(local_rv$last_x_season_game),
-                        backgroundColor = styleInterval(cuts = c(20,25,30,35,40)-1,
-                                                        values = c("#FFFFFF",c("#F5DCCF","#FFAA95","#cc8087","#8e646f","#696571"))))
+                  select(nameTeam) %>%
+                  left_join(local_rv$pts_last_games_long %>%
+                              arrange(id_last_game) %>%
+                              pivot_wider(names_from = id_last_game, values_from = pts),
+                            by = "nameTeam") %>%
+                  arrange(desc(pts_moy))) %>%
+        formatStyle(as.character(1:local_rv$nb_last_games),
+                    backgroundColor = styleInterval(cuts = c(20,25,30,35,40)-1,
+                                                    values = c("#FFFFFF",c("#F5DCCF","#FFAA95","#cc8087","#8e646f","#696571"))))
     })
 
   })
