@@ -37,3 +37,8 @@ Pour générer le document et le mettre sur github, il faut render le rmarkdown 
 rmarkdown::render("dev/rmd_statsNBA.Rmd", output_dir = "docs", output_file = "index.html")
 ```
 
+Docs de github actions
+
+https://github.com/marketplace/actions/github-action-for-rmarkdown
+https://github.com/marketplace/actions/github-action-for-rmarkdown#rmarkdown-action
+https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
