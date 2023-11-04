@@ -21,6 +21,11 @@ jobs:
             any::devtools
             any::here
             any::DT
+            any::config
+            any::golem
+            any::shiny
+            any::shinybusy
+            any::shinyWidgets
             github::abresler/nbastatR
 
       - name: Check out repository
