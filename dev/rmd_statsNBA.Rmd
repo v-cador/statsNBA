@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(dplyr)
 library(lubridate)
 library(tidyr)
+library(DT)
 # library(statsNBA)
 devtools::load_all(here::here())
 ```
