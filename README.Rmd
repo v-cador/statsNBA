@@ -42,3 +42,7 @@ Docs de github actions
 https://github.com/marketplace/actions/github-action-for-rmarkdown
 https://github.com/marketplace/actions/github-action-for-rmarkdown#rmarkdown-action
 https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+
+schedule pour render à 8h
+  schedule:
+  - cron: "0 8 * * *"
