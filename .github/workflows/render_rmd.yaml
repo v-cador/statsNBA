@@ -31,8 +31,25 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
+      - name: Install OpenVPN
+        run: sudo apt-get --yes install --no-install-recommends openvpn
+        env:
+          DEBIAN_FRONTEND: noninteractive
+
+      - name: Connect to ProtonVPN
+        run: vpn/connect.sh vpn/config.ovpn
+        env:
+          VPN_USERNAME: ${{ secrets.PROTONVPN_USERNAME }}
+          VPN_PASSWORD: ${{ secrets.PROTONVPN_PASSWORD }}
+          VPN_ROOT_CERT: ${{ secrets.PROTONVPN_ROOT_CERT }}
+          VPN_TLS_AUTH_KEY: ${{ secrets.PROTONVPN_TLS_AUTH_KEY }}
+
       - name: Render rmd
         run: Rscript -e 'rmarkdown::render("dev/rmd_statsNBA.Rmd",output_dir = "docs",output_file = "index.html")'
+
+      - name: Disconnect from ProtonVPN
+        run: sudo killall openvpn
+        if: ${{ always() }}
 
       - name: Commit results
         run: |
