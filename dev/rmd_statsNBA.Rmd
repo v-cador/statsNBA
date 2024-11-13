@@ -19,7 +19,7 @@ devtools::load_all(here::here())
 ```
 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # # Chargement des données
 game_data = suppressWarnings(game_logs(seasons = c(2025)))
 matchs_du_jour = suppressWarnings(get_match_day(Sys.Date()))
